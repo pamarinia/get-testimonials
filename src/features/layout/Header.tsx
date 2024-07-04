@@ -8,7 +8,7 @@ export type HeaderProps = {};
 export const Header = async () => {
   return (
     <header className="w-full border-b border-border py-1">
-      <Layout className="flex items-center gap-4">
+      <Layout className="flex flex-row items-center gap-4">
         <div className="flex-1">
           <Image
             src="/icon.png"

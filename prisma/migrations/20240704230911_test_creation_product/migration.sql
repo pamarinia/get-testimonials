@@ -1,0 +1,7 @@
+-- AlterTable
+ALTER TABLE "Product" ADD COLUMN     "enabled" BOOLEAN NOT NULL DEFAULT true,
+ALTER COLUMN "noteText" DROP NOT NULL,
+ALTER COLUMN "informationText" DROP NOT NULL,
+ALTER COLUMN "reviewText" DROP NOT NULL,
+ALTER COLUMN "thanksTest" DROP NOT NULL,
+ALTER COLUMN "backgroundColor" DROP NOT NULL;
