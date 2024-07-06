@@ -4,14 +4,14 @@ export const ProductSchema = z.object({
   name: z.string(),
   slug: z
     .string()
-    .regex(/^[a-zA-Z0-9_]*$/)
-    .min(10)
+    .regex(/^[a-zA-Z0-9_-]*$/)
+    .min(5)
     .max(20),
-  noteText: z.string().optional(),
-  informationText: z.string().optional(),
-  reviewText: z.string().optional(),
-  thanksTest: z.string().optional(),
-  backgroundColor: z.string(),
+  noteText: z.string().optional().nullable(),
+  informationText: z.string().optional().nullable(),
+  reviewText: z.string().optional().nullable(),
+  thanksTest: z.string().optional().nullable(),
+  backgroundColor: z.string().optional().nullable(),
 });
 
 export type ProductType = z.infer<typeof ProductSchema>;

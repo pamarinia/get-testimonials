@@ -24,7 +24,7 @@ import { cn } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { createProductAction } from "./product.action";
+import { createProductAction, updateProductAction } from "./product.action";
 import {
   GRADIENTS_CLASSES,
   ProductSchema,
@@ -34,6 +34,7 @@ import {
 
 export type ProductFormProps = {
   defaultValues?: ProductType;
+  productId?: string;
 };
 
 export const ProductForm = (props: ProductFormProps) => {
@@ -46,7 +47,12 @@ export const ProductForm = (props: ProductFormProps) => {
 
   const mutation = useMutation({
     mutationFn: async (values: ProductType) => {
-      const result = await createProductAction(values);
+      const result = isCreate
+        ? await createProductAction(values)
+        : await updateProductAction({
+            id: props.productId ?? "-",
+            data: values,
+          });
       console.log(result);
       if (result?.serverError || !result?.data) {
         toast.error(result?.serverError);
@@ -93,12 +99,41 @@ export const ProductForm = (props: ProductFormProps) => {
           />
           <FormField
             control={form.control}
+            name="slug"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Slug</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Iphone 15"
+                    {...field}
+                    onChange={(e) => {
+                      const value = e.target.value
+                        .replaceAll(" ", "-")
+                        .toLowerCase();
+
+                      field.onChange(value);
+                    }}
+                  />
+                </FormControl>
+                <FormDescription>
+                  The slug is used in the URL of the review page
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name="backgroundColor"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Background color</FormLabel>
                 <FormControl>
-                  <Select value={field.value} onValueChange={field.onChange}>
+                  <Select
+                    value={field.value ?? ""}
+                    onValueChange={field.onChange}
+                  >
                     <SelectTrigger>
                       <SelectValue></SelectValue>
                     </SelectTrigger>

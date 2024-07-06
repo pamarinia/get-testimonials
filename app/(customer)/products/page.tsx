@@ -2,6 +2,7 @@ import { requiredCurrentUser } from "@/auth/current-user";
 import { Layout, LayoutTitle } from "@/components/layout";
 import { Card } from "@/components/ui/card";
 import {
+  Table,
   TableBody,
   TableCell,
   TableHead,
@@ -10,7 +11,6 @@ import {
 } from "@/components/ui/table";
 import { prisma } from "@/prisma";
 import { PageParams } from "@/types/next";
-import { Table } from "lucide-react";
 import Link from "next/link";
 
 export default async function RoutePage(props: PageParams<{}>) {
@@ -21,6 +21,7 @@ export default async function RoutePage(props: PageParams<{}>) {
       userId: user.id,
     },
   });
+
   return (
     <Layout>
       <LayoutTitle>Products</LayoutTitle>
