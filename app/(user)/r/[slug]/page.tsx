@@ -3,7 +3,9 @@ import { cn } from "@/lib/utils";
 import { prisma } from "@/prisma";
 import { PageParams } from "@/types/next";
 import { notFound } from "next/navigation";
-import { ReviewsStep } from "./ReviewsStep";
+import { ProcessReviewsStep } from "./ProcessReviewStep";
+
+export const maxDuration = 360;
 
 export default async function RoutePage(props: PageParams<{ slug: string }>) {
   const product = await prisma.product.findFirst({
@@ -30,7 +32,7 @@ export default async function RoutePage(props: PageParams<{ slug: string }>) {
         <h1 className="text-4xl font-bold text-white">{product.name}</h1>
       </div>
       <div className="flex-1">
-        <ReviewsStep product={product} />
+        <ProcessReviewsStep product={product} />
       </div>
     </div>
   );
