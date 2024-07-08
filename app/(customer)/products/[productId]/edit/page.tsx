@@ -12,7 +12,6 @@ export default async function RoutePage(
 ) {
   const user = await requiredCurrentUser();
 
-  console.log("ok");
   const product = await prisma.product.findUnique({
     where: {
       id: props.params.productId,
@@ -26,7 +25,7 @@ export default async function RoutePage(
 
   return (
     <Layout>
-      <LayoutTitle>Create product</LayoutTitle>
+      <LayoutTitle>Edit product</LayoutTitle>
       <ProductForm defaultValues={product} productId={product.id} />
     </Layout>
   );

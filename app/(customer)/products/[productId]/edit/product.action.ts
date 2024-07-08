@@ -4,6 +4,7 @@ import { prisma } from "@/prisma";
 import { ActionError, userAction } from "@/safe-action";
 import { z } from "zod";
 import { ProductSchema } from "./product.schema";
+import { User } from "@prisma/client";
 
 const verifiedSlugUniqueness = async (slug: string, productId?: string) => {
   const slugExists = await prisma.product.count({
@@ -22,11 +23,30 @@ const verifiedSlugUniqueness = async (slug: string, productId?: string) => {
   }
 };
 
+const verifyUserPlan = async (user: User) => {
+  if (user.plan === "PREMIUM") {
+    return;
+  }
+
+  const userProductsCount = await prisma.product.count({
+    where: {
+      userId: user.id,
+    },
+  });
+
+  if (userProductsCount > 0) {
+    throw new ActionError(
+      "You need to upgrade to premium to create more products"
+    );
+  }
+};
+
 export const createProductAction = userAction
   .schema(ProductSchema)
   .action(async ({ parsedInput: input, ctx: context }) => {
     // verify if slug already exists
     await verifiedSlugUniqueness(input.slug);
+    await verifyUserPlan(context.user);
 
     const product = await prisma.product.create({
       data: {

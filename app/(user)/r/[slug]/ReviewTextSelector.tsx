@@ -5,12 +5,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
+import { useLocalStorage } from "react-use";
 import { toast } from "sonner";
 import { processAudioAction } from "./reviews.action";
-import { useLocalStorage } from "react-use";
+import { input } from "zod";
 
 export type ReviewTextSelectorProps = {
   productId: string;
+  onInputSend: (input: string) => void;
 };
 
 export const ReviewTextSelector = (props: ReviewTextSelectorProps) => {
@@ -31,14 +33,18 @@ export const ReviewTextSelector = (props: ReviewTextSelectorProps) => {
           </p>
         </TabsContent>
         <TabsContent value="text">
-          <InputControl />
+          <InputControl onInputSend={props.onInputSend} />
         </TabsContent>
       </Tabs>
     </div>
   );
 };
 
-const InputControl = ({}) => {
+const InputControl = ({
+  onInputSend,
+}: {
+  onInputSend: (input: string) => void;
+}) => {
   const [input, setInput] = useState("");
   return (
     <div className="flex flex-col gap-2">
@@ -48,7 +54,13 @@ const InputControl = ({}) => {
         value={input}
         onChange={(e) => setInput(e.target.value)}
       />
-      <Button variant="default" size="sm">
+      <Button
+        variant="default"
+        size="sm"
+        onClick={() => {
+          onInputSend(input);
+        }}
+      >
         Submit
       </Button>
     </div>
@@ -87,11 +99,15 @@ const AudioRecorderControl = ({
       const file = new File([blob], "audio.webm", { type: "audio/webm" });
       formData.append("audio", file);
 
+      console.log("before result");
+
       const result = await processAudioAction({
         formData,
         productId: productId,
         reviewId: reviewId,
       });
+
+      console.log("after result");
 
       if (result?.serverError || !result?.data) {
         toast.error(result?.serverError || "Failed to save audio");
@@ -128,7 +144,9 @@ const AudioRecorderControl = ({
           variant="default"
           size="sm"
           onClick={() => {
+            console.log("submitting");
             mutation.mutate();
+            console.log("sumbit");
           }}
         >
           Submit

@@ -1,4 +1,5 @@
 import { env } from "@/env";
+import { stripe } from "@/stripe";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 import NextAuth from "next-auth";
@@ -22,4 +23,28 @@ export const {
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
   ],
+  events: {
+    createUser: async (message) => {
+      const userId = message.user.id;
+      const userEmail = message.user.email;
+
+      if (!userEmail || !userId) {
+        return;
+      }
+
+      const stripCustomer = await stripe.customers.create({
+        name: message.user.name ?? "",
+        email: userEmail,
+      });
+
+      await prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          stripeCustomerId: stripCustomer.id,
+        },
+      });
+    },
+  },
 });

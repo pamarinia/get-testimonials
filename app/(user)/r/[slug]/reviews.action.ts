@@ -122,7 +122,7 @@ export const processAudioAction = action
     const audioFile = input.formData.get("audio");
 
     const result = await openai.audio.transcriptions.create({
-      file: audioFile,
+      file: audioFile as any,
       model: "whisper-1",
     });
 
@@ -137,13 +137,16 @@ export const processAudioAction = action
         {
           role: "system",
           content: `Context: You are a transcriptionist transcribing an audio reviex for a product. The audio is about "${review.product.name}".
-          Goal: You need to transcript and organize the audio review into a written review. The review should be clear and concise. It should be easy to understand and should be helpful for other customers.
+          Goal: You need to return the transqcript of the audio review.
           Criteria:
-          1. The review should be well-strucutred and organized.
-          2. The review should be easy to understand.
-          3. The review should be helpful for other customers.
-          4. The review should be concise and clear.
-          5. The review must respect what the customer said in the audio review.`,
+          - You CAN'T add, edit, or remove any information from the audio review.
+          - You JUST foramtting and regrouping the information from the audio review.
+          - You USE THE SAME language and tone as the customer used in the audio review.
+          
+          Response format:
+          - Return the plain text content review, without title or any other information.
+          - Use THE SAME LANGUAGE as the user used in the audio review.
+          - USE FRENCH !`,
         },
         {
           role: "user",
@@ -159,7 +162,7 @@ export const processAudioAction = action
         id: input.reviewId,
       },
       data: {
-        text: resultText,
+        text: result.text,
       },
     });
 
