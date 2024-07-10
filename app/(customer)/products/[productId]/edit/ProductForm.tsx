@@ -32,6 +32,8 @@ import {
   ProductSchema,
   ProductType,
 } from "./product.schema";
+import { Loader2 } from "lucide-react";
+import { AvatarFallback } from "@/components/ui/avatar";
 // Assuming ProductType is defined in a separate file
 
 export type ProductFormProps = {
@@ -63,6 +65,7 @@ export const ProductForm = (props: ProductFormProps) => {
 
       //toast.success("Product created successfully");
       router.push(`/products/${result.data.product.id}`);
+      router.refresh();
     },
   });
 
@@ -147,9 +150,13 @@ export const ProductForm = (props: ProductFormProps) => {
                       }}
                     />
                   </FormControl>
+                  {submitImage.isPending ? (
+                    <Loader2 className="h-6 animate-spin" />
+                  ) : null}
                   {field.value ? (
-                    <Avatar>
-                      <AvatarImage src={field.value} />
+                    <Avatar className="rounded-sm">
+                      <AvatarFallback>{field.value[0]}</AvatarFallback>
+                      <AvatarImage src={field.value} className="size-20" />
                     </Avatar>
                   ) : null}
                 </div>

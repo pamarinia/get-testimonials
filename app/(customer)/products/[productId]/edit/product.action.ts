@@ -5,6 +5,8 @@ import { ActionError, userAction } from "@/safe-action";
 import { z } from "zod";
 import { ProductSchema } from "./product.schema";
 import { User } from "@prisma/client";
+import { resend } from "@/resend";
+import { EMAIL_FROM } from "@/config";
 
 const verifiedSlugUniqueness = async (slug: string, productId?: string) => {
   const slugExists = await prisma.product.count({
@@ -39,6 +41,27 @@ const verifyUserPlan = async (user: User) => {
       "You need to upgrade to premium to create more products"
     );
   }
+};
+
+export const sendEmailIfUserCreatedFirstProduct = async (user: User) => {
+  if (user.plan === "PREMIUM") return;
+
+  const userProductsCount = await prisma.product.count({
+    where: {
+      userId: user.id,
+    },
+  });
+
+  if (userProductsCount === 1) {
+    return;
+  }
+
+  await resend.emails.send({
+    to: user.email ?? "",
+    from: EMAIL_FROM,
+    subject: "Welcome to our platform",
+    text: "You created your first product",
+  });
 };
 
 export const createProductAction = userAction

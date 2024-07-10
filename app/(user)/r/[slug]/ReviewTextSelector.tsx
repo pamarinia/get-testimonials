@@ -9,6 +9,7 @@ import { useLocalStorage } from "react-use";
 import { toast } from "sonner";
 import { processAudioAction } from "./reviews.action";
 import { input } from "zod";
+import { Loader2 } from "lucide-react";
 
 export type ReviewTextSelectorProps = {
   productId: string;
@@ -149,6 +150,9 @@ const AudioRecorderControl = ({
             console.log("sumbit");
           }}
         >
+          {mutation.isPending ? (
+            <Loader2 className="h-6 animate-spin"></Loader2>
+          ) : null}
           Submit
         </Button>
       ) : null}

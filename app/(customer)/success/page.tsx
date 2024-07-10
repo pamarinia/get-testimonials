@@ -15,7 +15,7 @@ export default async function RoutePage(props: PageParams<{}>) {
           Go to products
         </Link>
         <Link className={buttonVariants({ size: "lg" })} href="/products/new">
-          Create your nect product
+          Create your next product
         </Link>
       </div>
     </Layout>

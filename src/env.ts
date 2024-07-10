@@ -10,6 +10,7 @@ export const env = createEnv({
     OPENAI_API_KEY: z.string(),
     STRIPE_SECRET_KEY: z.string(),
     STRIPE_WEBHOOK_SECRET: z.string(),
+    RESEND_API_KEY: z.string(),
   },
   client: {},
   // For Next.js >= 13.4.4, you only need to destructure client variables:
