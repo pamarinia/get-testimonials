@@ -1,12 +1,13 @@
-import { Button } from "@/components/ui/button";
-import { LandingHeader } from "@/features/landing/LandingHeader";
+import { currentUser } from "@/auth/current-user";
+import { redirect } from "next/navigation";
+import Home from "./home/page";
 
-export default function Home() {
-  return (
-    <div className="flex flex-col gap-4">
-      <LandingHeader />
-      <p>Welcome Home !</p>
-      <Button>Test</Button>
-    </div>
-  );
+export default async function Index() {
+  const user = await currentUser();
+
+  if (user) {
+    redirect("/dashboard");
+  }
+
+  return <Home />;
 }

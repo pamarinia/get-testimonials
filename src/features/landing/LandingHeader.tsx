@@ -87,11 +87,12 @@ let clamp = (number: number, min: number, max: number) =>
   Math.min(Math.max(number, min), max);
 
 const AppButton = () => {
-  const session = useSession();
+  return <a href="/products">App</a>;
+  // const { data: session } = useSession();
 
-  if (session.data?.user) {
-    return <a href="/products">App</a>;
-  } else {
-    return <SignInButton />;
-  }
+  // if (session) {
+  //   return <a href="/products">App</a>;
+  // } else {
+  //   ;
+  // }
 };
